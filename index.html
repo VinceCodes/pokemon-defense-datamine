@@ -186,6 +186,7 @@ select.sort-select{padding:6px 10px;background:#0f3460;border:1px solid #1a1a4e;
 <button class="tab-btn" data-tab="spawns">🎲 Spawn Pools</button>
 <button class="tab-btn" data-tab="evolutions">🌳 Evolutions</button>
 <button class="tab-btn" data-tab="economy">💰 Economy</button>
+<button class="tab-btn" data-tab="waves">⚔ Waves</button>
 </div>
 
 <div id="tab-pokemon" class="tab-content">
@@ -218,9 +219,12 @@ select.sort-select{padding:6px 10px;background:#0f3460;border:1px solid #1a1a4e;
 
 <div id="tab-economy" class="tab-content">
 <div id="economy-content" data-rendered="1"><div class="econ-section"><h3>Game Commands</h3><table class="econ-table"><tbody><tr><td style="color:#ffd700;font-family:monospace">-interest</td><td>Toggle interest display</td></tr><tr><td style="color:#ffd700;font-family:monospace">-income</td><td>Show current income</td></tr><tr><td style="color:#ffd700;font-family:monospace">-sell</td><td>Sell a Pokemon (returns point value)</td></tr><tr><td style="color:#ffd700;font-family:monospace">-trade</td><td>Trade Pokemon at trader NPC</td></tr><tr><td style="color:#ffd700;font-family:monospace">-random</td><td>Get a random Pokemon from spawn pool</td></tr><tr><td style="color:#ffd700;font-family:monospace">-repick</td><td>Repick your Pokemon selection</td></tr><tr><td style="color:#ffd700;font-family:monospace">-cam XXXX</td><td>Set camera distance (e.g., -cam 3000)</td></tr></tbody></table></div><div class="econ-section"><h3>Evolution Cost Distribution</h3><table class="econ-table"><tbody><tr><th>Gold Cost</th><th>Count</th></tr><tr><td style="color:#ffcc00">10g</td><td>25 Pokemon</td></tr><tr><td style="color:#ffcc00">15g</td><td>4 Pokemon</td></tr><tr><td style="color:#ffcc00">20g</td><td>30 Pokemon</td></tr><tr><td style="color:#ffcc00">30g</td><td>14 Pokemon</td></tr><tr><td style="color:#ffcc00">90g</td><td>2 Pokemon</td></tr><tr><td style="color:#ffcc00">200g</td><td>16 Pokemon</td></tr><tr><td style="color:#ffcc00">500g</td><td>2 Pokemon</td></tr><tr><td style="color:#ffcc00">1000g</td><td>3 Pokemon</td></tr><tr><td style="color:#ffcc00">1500g</td><td>2 Pokemon</td></tr><tr><td style="color:#ffcc00">1600g</td><td>1 Pokemon</td></tr><tr><td style="color:#ffcc00">2000g</td><td>5 Pokemon</td></tr><tr><td style="color:#ffcc00">2500g</td><td>3 Pokemon</td></tr><tr><td style="color:#ffcc00">2600g</td><td>2 Pokemon</td></tr><tr><td style="color:#ffcc00">2800g</td><td>1 Pokemon</td></tr><tr><td style="color:#ffcc00">3000g</td><td>5 Pokemon</td></tr><tr><td style="color:#ffcc00">3500g</td><td>2 Pokemon</td></tr><tr><td style="color:#ffcc00">4000g</td><td>2 Pokemon</td></tr></tbody></table></div><div class="econ-section"><h3>Point Value Distribution</h3><table class="econ-table"><tbody><tr><th>Point Value</th><th>Count</th></tr><tr><td style="color:#ff8844">10 pts</td><td>22 Pokemon</td></tr><tr><td style="color:#ff8844">15 pts</td><td>4 Pokemon</td></tr><tr><td style="color:#ff8844">20 pts</td><td>43 Pokemon</td></tr><tr><td style="color:#ff8844">30 pts</td><td>18 Pokemon</td></tr><tr><td style="color:#ff8844">200 pts</td><td>16 Pokemon</td></tr><tr><td style="color:#ff8844">1000 pts</td><td>2 Pokemon</td></tr><tr><td style="color:#ff8844">1400 pts</td><td>2 Pokemon</td></tr><tr><td style="color:#ff8844">1500 pts</td><td>1 Pokemon</td></tr><tr><td style="color:#ff8844">1600 pts</td><td>1 Pokemon</td></tr><tr><td style="color:#ff8844">2000 pts</td><td>5 Pokemon</td></tr><tr><td style="color:#ff8844">2500 pts</td><td>3 Pokemon</td></tr><tr><td style="color:#ff8844">2600 pts</td><td>2 Pokemon</td></tr><tr><td style="color:#ff8844">2800 pts</td><td>1 Pokemon</td></tr><tr><td style="color:#ff8844">3000 pts</td><td>5 Pokemon</td></tr><tr><td style="color:#ff8844">3500 pts</td><td>2 Pokemon</td></tr><tr><td style="color:#ff8844">4000 pts</td><td>3 Pokemon</td></tr><tr><td style="color:#ff8844">4500 pts</td><td>1 Pokemon</td></tr></tbody></table></div><div class="econ-section"><h3>Spawn Pool Summary</h3><table class="econ-table"><tbody><tr><th>Type</th><th>Pool Size</th><th>Unique Pokemon</th></tr><tr><td style="color:#cc7733">Fighter</td><td>50 slots</td><td>11</td></tr><tr><td style="color:#ff4444">Fire</td><td>50 slots</td><td>10</td></tr><tr><td style="color:#44cc44">Grass</td><td>50 slots</td><td>11</td></tr><tr><td style="color:#ffd700">Lightning</td><td>50 slots</td><td>10</td></tr><tr><td style="color:#cccccc">Normal</td><td>50 slots</td><td>11</td></tr><tr><td style="color:#bb44bb">Psychic</td><td>50 slots</td><td>12</td></tr><tr><td style="color:#4488ff">Water</td><td>53 slots</td><td>13</td></tr></tbody></table></div></div>
+
+<div id="tab-waves" class="tab-content">
+<div id="waves-content"></div>
+</div>
 </div>
 
-<div id="waves-content" class="tab-content"></div>
 <div id="modal" class="modal-overlay">
 <div class="modal">
 <button class="modal-close" onclick="closeModal()">×</button>
@@ -253,8 +257,7 @@ window.TYPE_COLORS = {"Normal":"#cccccc","Lightning":"#ffd700","Water":"#4488ff"
 </script>
 <script>
 
-var allPokemon = window.WAVE_DATA = [{"wave":1,"enemies":[{"name":"Rocket Bandit","hp":100,"type":"Normal","level":1,"imageKey":"","id":"h00F"},{"name":"Rocket Bandit","hp":100,"type":"Normal","level":1,"imageKey":"","id":"h00F"},{"name":"Rocket Bandit","hp":100,"type":"Normal","level":1,"imageKey":"","id":"h00F"}],"pokeball":{"name":"Rattata","hp":100,"type":"Normal","level":1,"imageKey":"stock_019","id":"h02B"},"boss":null},{"wave":2,"enemies":[{"name":"Rattata","hp":100,"type":"Normal","level":1,"imageKey":"stock_019","id":"h02B"},{"name":"Rattata","hp":100,"type":"Normal","level":1,"imageKey":"stock_019","id":"h02B"}],"pokeball":{"name":"Absol","hp":100,"type":"Psychic","level":1,"imageKey":"stock_SatyrTrickster","id":"h0J1"},"boss":null},{"wave":3,"enemies":[{"name":"Pichu","hp":110,"type":"Lightning","level":1,"imageKey":"stock_Pikachu","id":"h02K"},{"name":"Pichu","hp":110,"type":"Lightning","level":1,"imageKey":"stock_Pikachu","id":"h02K"}],"pokeball":{"name":"Whismur","hp":100,"type":"Normal","level":1,"imageKey":"stock_Owlbear","id":"h0K3"},"boss":null},{"wave":4,"enemies":[{"name":"Finneon","hp":100,"type":"Water","level":1,"imageKey":"stock_Fish","id":"h0B0"},{"name":"Finneon","hp":100,"type":"Water","level":1,"imageKey":"stock_Fish","id":"h0B0"}],"pokeball":{"name":"Pachirisu","hp":100,"type":"Lightning","level":1,"imageKey":"stock_GnollArcher","id":"h0K2"},"boss":null},{"wave":5,"enemies":[{"name":"Ponyta","hp":150,"type":"Fire","level":1,"imageKey":"stock_077","id":"h09P"},{"name":"Ponyta","hp":150,"type":"Fire","level":1,"imageKey":"stock_077","id":"h09P"}],"pokeball":{"name":"Carnivine","hp":100,"type":"Grass","level":1,"imageKey":"stock_CorruptedEnt","id":"h0J8"},"boss":null},{"wave":6,"enemies":[{"name":"Zubat","hp":100,"type":"Grass","level":1,"imageKey":"stock_041","id":"h08X"},{"name":"Bulbasaur","hp":2000,"type":"Grass","level":10,"imageKey":"stock_001","id":"h00H"}],"pokeball":{"name":"Corphish","hp":100,"type":"Water","level":1,"imageKey":"stock_Lobstrokkred","id":"h0JI"},"boss":null},{"wave":7,"enemies":[{"name":"Gastly","hp":500,"type":"Psychic","level":10,"imageKey":"stock_gastly","id":"h01O"},{"name":"Abra","hp":200,"type":"Psychic","level":1,"imageKey":"stock_063","id":"h01V"}],"pokeball":{"name":"Riolu","hp":100,"type":"Fighter","level":1,"imageKey":"stock_Felgaurd","id":"h0JX"},"boss":null},{"wave":8,"enemies":[{"name":"Hitmonchan","hp":500,"type":"Fighter","level":3,"imageKey":"stock_VillagerMan","id":"h01E"},{"name":"Machop","hp":800,"type":"Fighter","level":10,"imageKey":"stock_066","id":"h024"}],"pokeball":{"name":"Numel","hp":100,"type":"Fire","level":1,"imageKey":"stock_DragonSeaTurtle","id":"h0JP"},"boss":null},{"wave":9,"enemies":[{"name":"Raticate","hp":350,"type":"Normal","level":15,"imageKey":"stock_020","id":"h02C"},{"name":"Persian","hp":2000,"type":"Normal","level":20,"imageKey":"stock_053","id":"h02Z"}],"pokeball":{"name":"Zubat","hp":100,"type":"Grass","level":1,"imageKey":"stock_041","id":"h08X"},"boss":null},{"wave":10,"enemies":[],"pokeball":null,"boss":null},{"wave":11,"enemies":[],"pokeball":null,"boss":null},{"wave":12,"enemies":[],"pokeball":null,"boss":null},{"wave":13,"enemies":[],"pokeball":null,"boss":null},{"wave":14,"enemies":[],"pokeball":null,"boss":null},{"wave":15,"enemies":[],"pokeball":null,"boss":null},{"wave":16,"enemies":[{"name":"Munchlax","hp":3000,"type":"Normal","level":20,"imageKey":"stock_Penguin","id":"h0A6"},{"name":"Raticate","hp":2500,"type":"Normal","level":50,"imageKey":"stock_020","id":"h02D"}],"pokeball":{"name":"Flareon","hp":200,"type":"Fire","level":1,"imageKey":"stock_ThunderLizardSalamander","id":"h0HK"},"boss":null},{"wave":17,"enemies":[{"name":"Electrode","hp":2500,"type":"Lightning","level":30,"imageKey":"stock_101","id":"h0AI"},{"name":"Flaaffy","hp":4000,"type":"Lightning","level":15,"imageKey":"stock_Sheep","id":"h0AM"}],"pokeball":{"name":"Jolteon","hp":200,"type":"Lightning","level":1,"imageKey":"stock_TimberWolf","id":"h0HG"},"boss":null},{"wave":18,"enemies":[{"name":"Krabby","hp":2000,"type":"Water","level":15,"imageKey":"stock_098","id":"h0B6"},{"name":"Cloyster","hp":10000,"type":"Water","level":30,"imageKey":"stock_Ruins_Shells0","id":"h0BZ"}],"pokeball":{"name":"Eevee","hp":200,"type":"Normal","level":1,"imageKey":"stock_PolarBear","id":"h0H8"},"boss":null},{"wave":19,"enemies":[{"name":"Magcargo","hp":6000,"type":"Fire","level":40,"imageKey":"stock_LavaSpawn","id":"h0A2"},{"name":"Rapidash","hp":10000,"type":"Fire","level":60,"imageKey":"stock_078","id":"h09S"}],"pokeball":{"name":"Bulbasaur","hp":2000,"type":"Grass","level":10,"imageKey":"stock_001","id":"h00H"},"boss":null},{"wave":20,"enemies":[{"name":"Ivysaur","hp":3000,"type":"Grass","level":16,"imageKey":"stock_002","id":"h00I"},{"name":"Golbat","hp":3000,"type":"Grass","level":25,"imageKey":"stock_042","id":"h08Z"}],"pokeball":{"name":"Squirtle","hp":1500,"type":"Water","level":10,"imageKey":"stock_007","id":"h00X"},"boss":null},{"wave":21,"enemies":[{"name":"Alakazam","hp":5000,"type":"Psychic","level":36,"imageKey":"stock_065","id":"h01Z"},{"name":"Kadabra","hp":5000,"type":"Psychic","level":30,"imageKey":"stock_064","id":"h01Y"}],"pokeball":{"name":"Abra","hp":1000,"type":"Psychic","level":10,"imageKey":"stock_063","id":"h01W"},"boss":null},{"wave":22,"enemies":[{"name":"Sandslash","hp":10000,"type":"Fighter","level":25,"imageKey":"stock_Furbolg","id":"h03Q"},{"name":"Claydol","hp":18000,"type":"Fighter","level":70,"imageKey":"stock_RockPillar0","id":"h0BD"}],"pokeball":{"name":"Charmander","hp":1000,"type":"Fire","level":10,"imageKey":"stock_004","id":"h00P"},"boss":null},{"wave":23,"enemies":[{"name":"Fearow","hp":4000,"type":"Normal","level":20,"imageKey":"stock_022","id":"h034"},{"name":"Fearow","hp":20000,"type":"Normal","level":75,"imageKey":"stock_022","id":"h036"}],"pokeball":{"name":"Spheal","hp":500,"type":"Water","level":1,"imageKey":"stock_WaterElemental","id":"h0FG"},"boss":null},{"wave":24,"enemies":[{"name":"Raichu","hp":14000,"type":"Lightning","level":60,"imageKey":"stock_026","id":"h02N"},{"name":"Manectric","hp":8000,"type":"Lightning","level":60,"imageKey":"stock_BrownWolf","id":"h0AT"}],"pokeball":{"name":"Dratini","hp":100,"type":"Lightning","level":1,"imageKey":"stock_DuneWorm","id":"h0F4"},"boss":null},{"wave":25,"enemies":[{"name":"Poliwhirl","hp":5000,"type":"Water","level":30,"imageKey":"stock_DruidoftheClaw","id":"h03W"},{"name":"Milotic","hp":12500,"type":"Water","level":70,"imageKey":"stock_WindSerpent","id":"h0DN"}],"pokeball":{"name":"Anorith","hp":300,"type":"Grass","level":1,"imageKey":"stock_ArchnathidGreen","id":"h0EZ"},"boss":null},{"wave":26,"enemies":[{"name":"Charizard","hp":17000,"type":"Fire","level":50,"imageKey":"stock_006","id":"h00T"},{"name":"Arcanine","hp":15000,"type":"Fire","level":40,"imageKey":"stock_felhound_V1","id":"h09F"}],"pokeball":{"name":"Shuppet","hp":300,"type":"Psychic","level":1,"imageKey":"stock_Shade","id":"h0FO"},"boss":{"name":"Pachirisu","hp":17500,"type":"Lightning","level":100,"imageKey":"stock_GnollArcher","id":"h0JB"}},{"wave":27,"enemies":[{"name":"Golbat","hp":3000,"type":"Grass","level":25,"imageKey":"stock_042","id":"h08Z"},{"name":"Parasect","hp":7000,"type":"Grass","level":50,"imageKey":"stock_ShroomsBlue","id":"h03C"}],"pokeball":{"name":"Gible","hp":200,"type":"Fighter","level":1,"imageKey":"stock_DragonSpawnBlue","id":"h0EN"},"boss":{"name":"Metagross","hp":80000,"type":"Psychic","level":100,"imageKey":"stock_InfernalCannonFlame","id":"h0DI"}},{"wave":28,"enemies":[{"name":"Grumpig","hp":20000,"type":"Psychic","level":100,"imageKey":"stock_Bristleback","id":"h04D"},{"name":"Alakazam","hp":20000,"type":"Psychic","level":100,"imageKey":"stock_065","id":"h022"}],"pokeball":{"name":"Bagon","hp":200,"type":"Fire","level":1,"imageKey":"stock_Hydra","id":"h0FB"},"boss":{"name":"Steelix","hp":30000,"type":"Fighter","level":100,"imageKey":"stock_MagnataurBlue","id":"h0HX"}},{"wave":29,"enemies":[{"name":"Hariyama","hp":25000,"type":"Fighter","level":100,"imageKey":"stock_EarthPandarenBrewmaster","id":"h0C6"},{"name":"Golem","hp":22000,"type":"Fighter","level":60,"imageKey":"stock_076","id":"h09N"}],"pokeball":{"name":"Aerodactyl","hp":250,"type":"Normal","level":1,"imageKey":"stock_BlackDragon","id":"h0ET"},"boss":{"name":"Armaldo","hp":55000,"type":"Grass","level":100,"imageKey":"stock_ArchnathidGreen","id":"h0F3"}},{"wave":30,"enemies":[{"name":"Pidgeot","hp":28000,"type":"Normal","level":100,"imageKey":"stock_018","id":"h02W"},{"name":"Pidgeot","hp":10000,"type":"Normal","level":50,"imageKey":"stock_018","id":"h02U"}],"pokeball":{"name":"Machop","hp":800,"type":"Fighter","level":10,"imageKey":"stock_066","id":"h024"},"boss":{"name":"Walrein","hp":80000,"type":"Water","level":100,"imageKey":"stock_WaterElemental","id":"h0FK"}},{"wave":31,"enemies":[{"name":"Magnezone","hp":15000,"type":"Lightning","level":40,"imageKey":"stock_082","id":"h09X"},{"name":"Manectric","hp":8000,"type":"Lightning","level":60,"imageKey":"stock_BrownWolf","id":"h0AT"}],"pokeball":{"name":"Sandshrew","hp":1300,"type":"Fighter","level":15,"imageKey":"stock_FurbolgShaman","id":"h03P"},"boss":{"name":"Carnivine","hp":70000,"type":"Grass","level":100,"imageKey":"stock_CorruptedEnt","id":"h0J2"}},{"wave":32,"enemies":[{"name":"Dewgong","hp":16000,"type":"Water","level":70,"imageKey":"stock_Seal","id":"h0AY"},{"name":"Milotic","hp":8000,"type":"Water","level":50,"imageKey":"stock_WindSerpent","id":"h0DM"}],"pokeball":{"name":"Spearow","hp":650,"type":"Normal","level":10,"imageKey":"stock_021","id":"h033"},"boss":{"name":"Dunsparce","hp":40000,"type":"Normal","level":100,"imageKey":"stock_GnollOverseer","id":"h0I4"}},{"wave":33,"enemies":[{"name":"Magcargo","hp":6000,"type":"Fire","level":40,"imageKey":"stock_LavaSpawn","id":"h0A2"},{"name":"Arcanine","hp":25000,"type":"Fire","level":70,"imageKey":"stock_felhound_V1","id":"h09G"}],"pokeball":{"name":"Pidgey","hp":650,"type":"Normal","level":10,"imageKey":"stock_016","id":"h02Q"},"boss":{"name":"Cradily","hp":50000,"type":"Grass","level":100,"imageKey":"stock_JungleBeast","id":"h0I7"}},{"wave":34,"enemies":[{"name":"Venusaur","hp":40000,"type":"Grass","level":100,"imageKey":"stock_003","id":"h00N"},{"name":"Venusaur","hp":34000,"type":"Grass","level":50,"imageKey":"stock_003","id":"h00L"}],"pokeball":{"name":"Persian","hp":2000,"type":"Normal","level":20,"imageKey":"stock_053","id":"h02Z"},"boss":{"name":"Darkrai","hp":60000,"type":"Psychic","level":100,"imageKey":"stock_HeroFlameLord","id":"h0G5"}},{"wave":35,"enemies":[{"name":"Grumpig","hp":12000,"type":"Psychic","level":60,"imageKey":"stock_Bristleback","id":"h04C"},{"name":"Medicham","hp":10000,"type":"Psychic","level":100,"imageKey":"stock_DranaiMage","id":"h0BR"}],"pokeball":{"name":"Wartortle","hp":2000,"type":"Water","level":16,"imageKey":"stock_008","id":"h00Y"},"boss":{"name":"Groudon","hp":54000,"type":"Fire","level":100,"imageKey":"stock_Infernal","id":"h0G2"}},{"wave":36,"enemies":[{"name":"Hitmonlee","hp":12500,"type":"Fighter","level":80,"imageKey":"stock_Zombie","id":"h01L"},{"name":"Regirock","hp":120000,"type":"Fighter","level":100,"imageKey":"stock_MountainGiant","id":"h0DD"}],"pokeball":{"name":"Ivysaur","hp":3000,"type":"Grass","level":16,"imageKey":"stock_002","id":"h00I"},"boss":{"name":"Kingdra","hp":50000,"type":"Water","level":100,"imageKey":"stock_RevenantOfTheWaves","id":"h0I1"}},{"wave":37,"enemies":[{"name":"Persian","hp":18000,"type":"Normal","level":80,"imageKey":"stock_053","id":"h031"},{"name":"Pachirisu","hp":5000,"type":"Lightning","level":55,"imageKey":"stock_GnollArcher","id":"h0JE"},{"name":"Blissey","hp":50000,"type":"Normal","level":100,"imageKey":"stock_FurbolgPanda","id":"h02J"}],"pokeball":{"name":"Spoink","hp":2000,"type":"Psychic","level":20,"imageKey":"stock_Pig","id":"h04A"},"boss":{"name":"Lugia","hp":40000,"type":"Psychic","level":100,"imageKey":"stock_Lugia Animated","id":"h0HW"}},{"wave":38,"enemies":[{"name":"Magnezone","hp":15000,"type":"Lightning","level":40,"imageKey":"stock_082","id":"h09X"},{"name":"Raikou","hp":55000,"type":"Lightning","level":100,"imageKey":"stock_HeroDeathKnight","id":"h0CI"},{"name":"Magnezone","hp":35000,"type":"Lightning","level":85,"imageKey":"stock_082","id":"h09Z"}],"pokeball":{"name":"Charmeleon","hp":2000,"type":"Fire","level":16,"imageKey":"stock_005","id":"h00Q"},"boss":{"name":"Palkia","hp":60000,"type":"Lightning","level":100,"imageKey":"stock_HROS","id":"h0GJ"}},{"wave":39,"enemies":[{"name":"Dewgong","hp":16000,"type":"Water","level":70,"imageKey":"stock_Seal","id":"h0AY"},{"name":"Hariyama","hp":25000,"type":"Fighter","level":100,"imageKey":"stock_EarthPandarenBrewmaster","id":"h0C6"},{"name":"Milotic","hp":12500,"type":"Water","level":70,"imageKey":"stock_WindSerpent","id":"h0DN"}],"pokeball":{"name":"Zubat","hp":1000,"type":"Grass","level":15,"imageKey":"stock_041","id":"h08Y"},"boss":{"name":"Dialga","hp":60000,"type":"Normal","level":100,"imageKey":"stock_DSRA","id":"h0GI"}},{"wave":40,"enemies":[{"name":"Arcanine","hp":25000,"type":"Fire","level":70,"imageKey":"stock_felhound_V1","id":"h09G"},{"name":"Charizard","hp":40000,"type":"Fire","level":100,"imageKey":"stock_006","id":"h00V"}],"pokeball":{"name":"Gastly","hp":500,"type":"Psychic","level":10,"imageKey":"stock_gastly","id":"h01O"},"boss":{"name":"Arceus","hp":90000,"type":"Fire","level":90,"imageKey":"stock_Metaknight","id":"h0H1"}},{"wave":41,"enemies":[{"name":"Grass Trainer","hp":160000,"type":"Grass","level":90,"imageKey":"stock_herowarden","id":"h061"}],"pokeball":{"name":"Hitmonchan","hp":500,"type":"Fighter","level":3,"imageKey":"stock_VillagerMan","id":"h01E"},"boss":{"name":"Celebi","hp":25000,"type":"Grass","level":100,"imageKey":"stock_OwlSCOUT","id":"h0D3"}},{"wave":42,"enemies":[{"name":"Psychic Trainer Ranger","hp":100000,"type":"Psychic","level":100,"imageKey":"stock_BansheeRanger","id":"h08K"}],"pokeball":{"name":"Hitmonlee","hp":500,"type":"Fighter","level":3,"imageKey":"stock_Zombie","id":"h01I"},"boss":{"name":"Kyogre","hp":90000,"type":"Water","level":100,"imageKey":"stock_FaerieDragon","id":"h0CN"}},{"wave":43,"enemies":[{"name":"Fighter Trainer Ranger","hp":80000,"type":"Fighter","level":90,"imageKey":"stock_HeadHunter_V1","id":"h08U"}],"pokeball":{"name":"Magby","hp":250,"type":"Fire","level":10,"imageKey":"stock_ChaosPeon","id":"h044"},"boss":{"name":"Regirock","hp":120000,"type":"Fighter","level":100,"imageKey":"stock_MountainGiant","id":"h0DD"}},{"wave":44,"enemies":[{"name":"Normal Trainer","hp":80000,"type":"Normal","level":70,"imageKey":"stock_PandarenBrewmaster","id":"h04M"}],"pokeball":{"name":"Kakuna","hp":700,"type":"Grass","level":7,"imageKey":"stock_014","id":"h01A"},"boss":{"name":"Golem","hp":36000,"type":"Fighter","level":100,"imageKey":"stock_076","id":"h09O"}},{"wave":45,"enemies":[{"name":"Lightning Trainer Ranger","hp":80000,"type":"Lightning","level":90,"imageKey":"stock_Thrall","id":"h07B"}],"pokeball":{"name":"Raticate","hp":350,"type":"Normal","level":15,"imageKey":"stock_020","id":"h02C"},"boss":{"name":"Arceus","hp":400000,"type":"Fire","level":100,"imageKey":"stock_Metaknight","id":"h0GT"}},{"wave":46,"enemies":[{"name":"Water Trainer Ranger","hp":40000,"type":"Water","level":70,"imageKey":"stock_HeroNagaSeawitch","id":"h07K"}],"pokeball":{"name":"Sandshrew","hp":1300,"type":"Fighter","level":15,"imageKey":"stock_FurbolgShaman","id":"h03P"},"boss":null},{"wave":47,"enemies":[{"name":"Fire Trainer","hp":200000,"type":"Fire","level":100,"imageKey":"stock_HeroChaosBladeMaster","id":"h05Q"}],"pokeball":{"name":"Spearow","hp":650,"type":"Normal","level":10,"imageKey":"stock_021","id":"h033"},"boss":null},{"wave":48,"enemies":[{"name":"Armaldo","hp":55000,"type":"Grass","level":100,"imageKey":"stock_ArchnathidGreen","id":"h0F3"},{"name":"Grass Trainer","hp":200000,"type":"Grass","level":100,"imageKey":"stock_herowarden","id":"h062"}],"pokeball":{"name":"Pidgey","hp":650,"type":"Normal","level":10,"imageKey":"stock_016","id":"h02Q"},"boss":null},{"wave":49,"enemies":[{"name":"Walrein","hp":80000,"type":"Water","level":100,"imageKey":"stock_WaterElemental","id":"h0FK"},{"name":"Psychic Trainer Ranger","hp":80000,"type":"Psychic","level":90,"imageKey":"stock_BansheeRanger","id":"h08J"}],"pokeball":{"name":"Ekans","hp":650,"type":"Grass","level":10,"imageKey":"stock_023","id":"h03F"},"boss":null},{"wave":50,"enemies":[{"name":"Arceus","hp":400000,"type":"Fire","level":100,"imageKey":"stock_Metaknight","id":"h0GT"},{"name":"Normal Trainer Ranger","hp":60000,"type":"Normal","level":80,"imageKey":"stock_SylvanusWindrunner","id":"h06Z"}],"pokeball":{"name":"Poliwag","hp":650,"type":"Water","level":10,"imageKey":"stock_DuneWorm","id":"h03U"},"boss":null},{"wave":51,"enemies":[{"name":"Arceus","hp":400000,"type":"Fire","level":100,"imageKey":"stock_Metaknight","id":"h0GT"}],"pokeball":{"name":"Corphish","hp":5000,"type":"Water","level":25,"imageKey":"stock_Lobstrokkred","id":"h0JH"},"boss":{"name":"Pachirisu","hp":17500,"type":"Lightning","level":100,"imageKey":"stock_GnollArcher","id":"h0JB"}}];
-window.POKEMON_DATA;
+var allPokemon = window.POKEMON_DATA;
 var images = window.IMAGE_DATA;
 var spawnPools = window.SPAWN_POOLS;
 var tradeTable = window.TRADE_TABLE;
@@ -593,6 +596,7 @@ function switchTab(tab) {
     if (tab === 'types') renderTypesTab();
     if (tab === 'trading') renderTradingTab();
     if (tab === 'spawns') renderSpawnsTab();
+    if (tab === 'waves') renderWavesTab();
     if (tab === 'evolutions') renderEvolutionsTab();
     if (tab === 'economy') renderEconomyTab();
 }
@@ -713,8 +717,8 @@ function renderWavesTab() {
 
     var waves = window.WAVE_DATA;
     var typeColors = window.TYPE_COLORS || {};
-    var html = '<h2 style="margin-bottom:16px">&#9876; Wave Enemy Guide</h2>';
-    html += '<p style="color:#888;margin-bottom:16px">51 waves of enemies. Types shown help you plan your team composition. Click any Pokemon to see its stats.</p>';
+    var h = '<h2 style="margin-bottom:16px">\u2694 Wave Enemy Guide</h2>';
+    h += '<p style="color:#888;margin-bottom:16px">51 waves of enemies. Types shown help you plan your team composition. Click any Pokemon to see its stats.</p>';
 
     var phases = [
         {name:'Early Game', range:[1,8], desc:'Build economy, catch base Pokemon'},
@@ -726,23 +730,22 @@ function renderWavesTab() {
 
     for (var pi = 0; pi < phases.length; pi++) {
         var phase = phases[pi];
-        html += '<div class="wave-phase">';
-        html += '<h3 class="phase-title">' + phase.name + ' <span style="color:#666;font-weight:400">(Waves ' + phase.range[0] + '-' + phase.range[1] + ')</span></h3>';
-        html += '<p style="color:#888;font-size:.85rem;margin-bottom:12px">' + phase.desc + '</p>';
-        html += '<div class="wave-grid">';
+        h += '<div class="wave-phase">';
+        h += '<h3 class="phase-title">' + phase.name + ' <span style="color:#666;font-weight:400">(Waves ' + phase.range[0] + '-' + phase.range[1] + ')</span></h3>';
+        h += '<p style="color:#888;font-size:.85rem;margin-bottom:12px">' + phase.desc + '</p>';
+        h += '<div class="wave-grid">';
 
         for (var wi = 0; wi < waves.length; wi++) {
             var w = waves[wi];
             if (w.wave < phase.range[0] || w.wave > phase.range[1]) continue;
             if (w.enemies.length === 0 && !w.boss) continue;
 
-            html += '<div class="wave-card">';
-            html += '<div class="wave-num">Wave ' + w.wave + '</div>';
+            h += '<div class="wave-card">';
+            h += '<div class="wave-num">Wave ' + w.wave + '</div>';
 
-            var allEnemies = w.enemies;
+            var allEnemies = w.enemies.slice();
             if (allEnemies.length === 0 && w.boss) allEnemies = [w.boss];
 
-            // Collect types for this wave
             var waveTypes = {};
             for (var ei = 0; ei < allEnemies.length; ei++) {
                 var e = allEnemies[ei];
@@ -750,45 +753,47 @@ function renderWavesTab() {
             }
             var typeKeys = Object.keys(waveTypes);
             if (typeKeys.length > 0) {
-                html += '<div class="wave-types">';
+                h += '<div class="wave-types">';
                 for (var ti = 0; ti < typeKeys.length; ti++) {
-                    html += '<span class="wave-type-badge" style="background:' + waveTypes[typeKeys[ti]] + '22;color:' + waveTypes[typeKeys[ti]] + ';border:1px solid ' + waveTypes[typeKeys[ti]] + '44">' + typeKeys[ti] + '</span>';
+                    h += '<span class="wave-type-badge" style="background:' + waveTypes[typeKeys[ti]] + '22;color:' + waveTypes[typeKeys[ti]] + ';border:1px solid ' + waveTypes[typeKeys[ti]] + '44">' + typeKeys[ti] + '</span>';
                 }
-                html += '</div>';
+                h += '</div>';
             }
 
-            html += '<div class="wave-enemies">';
+            h += '<div class="wave-enemies">';
             for (var ei2 = 0; ei2 < allEnemies.length; ei2++) {
                 var en = allEnemies[ei2];
                 var eColor = typeColors[en.type] || '#888';
-                html += '<div class="wave-enemy" onclick="showModal(\'' + en.id + '\')" title="Click for details">';
-                if (en.imageKey && window.IMAGE_DATA && window.IMAGE_DATA[en.imageKey]) {
-                    html += '<img src="data:image/png;base64,' + window.IMAGE_DATA[en.imageKey] + '" width="28" height="28" style="border-radius:4px">';
+                h += '<div class="wave-enemy" onclick="showModal(\'' + en.id + '\')" title="Click for details">';
+                var imgKey = en.imageKey;
+                if (imgKey && window.IMAGE_DATA && window.IMAGE_DATA[imgKey]) {
+                    h += '<img src="data:image/png;base64,' + window.IMAGE_DATA[imgKey] + '" width="28" height="28" style="border-radius:4px">';
                 }
-                html += '<span style="color:' + eColor + '">' + escHTML(en.name) + '</span>';
-                if (en.hp > 0) html += '<span class="wave-hp">' + formatHP(en.hp) + ' HP</span>';
-                html += '</div>';
+                h += '<span style="color:' + eColor + '">' + escHTML(en.name) + '</span>';
+                if (en.hp > 0) h += '<span class="wave-hp">' + fmtHP(en.hp) + ' HP</span>';
+                h += '</div>';
             }
-            html += '</div>';
+            h += '</div>';
 
             if (w.pokeball) {
                 var pb = w.pokeball;
                 var pbColor = typeColors[pb.type] || '#888';
-                html += '<div class="wave-pokeball" onclick="showModal(\'' + pb.id + '\')" title="Pokeball hunt reward">';
-                html += '<span style="color:#ffd700">&#x26BD;</span> ';
-                if (pb.imageKey && window.IMAGE_DATA && window.IMAGE_DATA[pb.imageKey]) {
-                    html += '<img src="data:image/png;base64,' + window.IMAGE_DATA[pb.imageKey] + '" width="20" height="20" style="border-radius:3px;vertical-align:middle"> ';
+                h += '<div class="wave-pokeball" onclick="showModal(\'' + pb.id + '\')" title="Pokeball hunt reward">';
+                h += '<span style="color:#ffd700">&#x26BD;</span> ';
+                var pbKey = pb.imageKey;
+                if (pbKey && window.IMAGE_DATA && window.IMAGE_DATA[pbKey]) {
+                    h += '<img src="data:image/png;base64,' + window.IMAGE_DATA[pbKey] + '" width="20" height="20" style="border-radius:3px;vertical-align:middle"> ';
                 }
-                html += '<span style="color:' + pbColor + '">' + escHTML(pb.name) + '</span>';
-                html += '</div>';
+                h += '<span style="color:' + pbColor + '">' + escHTML(pb.name) + '</span>';
+                h += '</div>';
             }
 
-            html += '</div>';
+            h += '</div>';
         }
-        html += '</div></div>';
+        h += '</div></div>';
     }
 
-    c.innerHTML = html;
+    c.innerHTML = h;
 }
 
 function renderSpawnsTab() {
