@@ -267,6 +267,93 @@ var tradeTable = window.TRADE_TABLE;
 var evoSummaries = window.EVO_SUMMARIES;
 var typeAdvantages = window.TYPE_ADVANTAGES;
 var typeColors = window.TYPE_COLORS;
+// --- Total Cost Computation ---
+function computePokemonCosts() {
+    var byId = {};
+    for (var i = 0; i < allPokemon.length; i++) byId[allPokemon[i].id] = allPokemon[i];
+    var nameToBaseChain = {};
+    for (var i = 0; i < allPokemon.length; i++) {
+        var p = allPokemon[i];
+        if (p.isBase && p.evolutionChain && p.evolutionChain.length > 0) {
+            nameToBaseChain[p.name] = p.evolutionChain;
+        }
+    }
+    for (var i = 0; i < allPokemon.length; i++) {
+        var p = allPokemon[i];
+        var chain = p.evolutionChain;
+        if (!chain || chain.length === 0) {
+            p._totalCost = p.goldCost || 0;
+            p._isTradeObtained = false;
+            continue;
+        }
+        var myIdx = -1;
+        for (var j = 0; j < chain.length; j++) {
+            if (chain[j] === p.id) { myIdx = j; break; }
+        }
+        if (myIdx === -1) myIdx = 0;
+        var basePoke = byId[chain[0]];
+        if (!basePoke) { p._totalCost = p.goldCost || 0; p._isTradeObtained = false; continue; }
+        var isTradeObtained = basePoke.trade && basePoke.trade.direction === 'to';
+        var catchCost = 0;
+        var tradeSourceName = null;
+        var tradeSourceCost = 0;
+        if (isTradeObtained && basePoke.trade.partner) {
+            tradeSourceName = basePoke.trade.partner;
+            var srcChain = nameToBaseChain[tradeSourceName];
+            if (!srcChain) {
+                for (var k = 0; k < allPokemon.length; k++) {
+                    if (allPokemon[k].name === tradeSourceName && allPokemon[k].evolutionChain) {
+                        srcChain = allPokemon[k].evolutionChain;
+                        break;
+                    }
+                }
+            }
+            if (srcChain) {
+                var srcBase = byId[srcChain[0]];
+                tradeSourceCost = srcBase ? srcBase.pointValue : 0;
+                for (var m = 1; m < srcChain.length; m++) {
+                    var sep = byId[srcChain[m]];
+                    if (sep) tradeSourceCost += sep.goldCost;
+                }
+            }
+            catchCost = tradeSourceCost;
+        } else {
+            catchCost = basePoke.pointValue || 0;
+        }
+        var evoCost = 0;
+        for (var j = 1; j <= myIdx; j++) {
+            var ep = byId[chain[j]];
+            if (ep) evoCost += ep.goldCost;
+        }
+        p._totalCost = catchCost + evoCost;
+        p._catchCost = catchCost;
+        p._evoCost = evoCost;
+        p._isTradeObtained = !!isTradeObtained;
+        p._tradeSourceName = tradeSourceName;
+        p._tradeSourceCost = tradeSourceCost;
+    }
+    // Annotate evo chains with cumulative costs
+    var visited = {};
+    for (var i = 0; i < allPokemon.length; i++) {
+        var p = allPokemon[i];
+        if (!p.evolutionChain || visited[p.evolutionChain[0]]) continue;
+        visited[p.evolutionChain[0]] = true;
+        var chain = p.evolutionChain;
+        var basePoke = byId[chain[0]];
+        if (!basePoke) continue;
+        var isTradeObtained = basePoke.trade && basePoke.trade.direction === 'to';
+        var baseCost = isTradeObtained ? (basePoke._catchCost || 0) : (basePoke.pointValue || 0);
+        var cum = baseCost;
+        for (var j = 0; j < chain.length; j++) {
+            var ep = byId[chain[j]];
+            if (!ep) continue;
+            if (j > 0) cum += ep.goldCost;
+            ep._cumCost = cum;
+        }
+    }
+}
+computePokemonCosts();
+
 
 var filteredPokemon = [];
 var currentSort = 'name';
@@ -422,7 +509,7 @@ function renderCards() {
         }
         html += '<div class="card-footer">';
         html += '<span>' + (p.goldCost > 0 ? p.goldCost + 'g evolve' : 'Base') + '</span>';
-        html += '<span>' + p.pointValue + ' pts</span>';
+        html += '<span style="color:#ffd700">' + (p._totalCost != null ? p._totalCost + 'g total' : p.pointValue + ' pts') + '</span>';
         html += '<span style="font-family:monospace;color:#555">' + p.id + '</span>';
         html += '</div></div>';
     }
@@ -482,7 +569,7 @@ function showModal(uid) {
     html += statBox('Attack Cooldown', p.atkCooldown + 's', '#aaa');
     if (p.hpRegen > 0) html += statBox('HP Regen', p.hpRegen + '/sec', '#44cc88');
     html += statBox('Gold Cost', p.goldCost + 'g', '#ffcc00');
-    html += statBox('Point Value', '' + p.pointValue, '#ff8844');
+    html += statBox('Point Value', '' + p.pointValue, '#ff8844');    if (p._totalCost != null) {        html += statBox('Total Cost', p._totalCost + 'g', '#ffd700');        if (p._isTradeObtained && p._tradeSourceName) {            html += statBox('Trade Source', p._tradeSourceName + ' (' + p._tradeSourceCost + 'g)', '#ff88cc');        }    }
     if (p.spawnChance != null) html += statBox('Spawn Chance', p.spawnChance + '% (' + p.spawnSlots + ' slots)', '#ffaa44');
     html += '</div></div>';
 
@@ -544,7 +631,7 @@ function showModal(uid) {
 
     // Evolution chain
     if (p.evolutionChain && p.evolutionChain.length > 1) {
-        html += '<div class="modal-section"><h3>Evolution Chain</h3><div class="evo-chain">';
+        html += '<div class="modal-section"><h3>Evolution Chain</h3>';    var _bp = null; for (var _bi = 0; _bi < allPokemon.length; _bi++) { if (allPokemon[_bi].id === p.evolutionChain[0]) { _bp = allPokemon[_bi]; break; } }    if (_bp && _bp._isTradeObtained && _bp._tradeSourceName) {        html += '<div style="color:#ff88cc;margin-bottom:8px;font-size:.85rem">↔ Obtained by trading <strong>' + _bp._tradeSourceName + '</strong> at max level (' + _bp._tradeSourceCost + 'g investment)</div>';    } else if (_bp && !_bp._isTradeObtained && _bp.pointValue > 0) {        html += '<div style="color:#88ccff;margin-bottom:8px;font-size:.85rem">◉ Catch cost: ' + _bp.pointValue + 'g</div>';    }    html += '<div class="evo-chain">';
         for (var i = 0; i < p.evolutionChain.length; i++) {
             var eid = p.evolutionChain[i];
             var ep = null;
@@ -558,7 +645,7 @@ function showModal(uid) {
             html += '<div>' + getImgHTML(ep.imageKey, 48, '', ep.name, ep.typeColor) + '</div>';
             html += '<div class="evo-name" style="color:' + ep.typeColor + '">' + escHTML(ep.name) + '</div>';
             html += '<div class="evo-stats">Lv.' + (ep.level||'?') + ' | HP:' + fmtHP(ep.hp) + ' | DPS:' + ep.dps + '</div>';
-            if (ep.goldCost > 0) html += '<div class="evo-stats" style="color:#ffcc00">' + ep.goldCost + 'g</div>';
+            if (ep.goldCost > 0) html += '<div class="evo-stats" style="color:#ffcc00">' + ep.goldCost + 'g</div>';            if (ep._cumCost != null) html += '<div class="evo-stats" style="color:#ffd700;font-weight:bold">' + ep._cumCost + 'g total</div>';
             if (ep.abilities && ep.abilities.length > 0) {
                 html += '<div class="evo-stats" style="color:#44cc88">' + ep.abilities.join(', ') + '</div>';
             }
@@ -876,7 +963,7 @@ function renderEvolutionsTab() {
         html += '<div class="evo-family">';
         html += '<div class="evo-family-header"><div class="type-dot" style="background:' + tc + '"></div>';
         html += '<span style="color:' + tc + '">' + escHTML(fam.name) + ' Family</span>';
-        html += '<span class="count-badge">' + fam.stages.length + ' stages</span></div>';
+        var _famTotal = 0; { var _lastStage = fam.stages[fam.stages.length - 1]; var _fp = null; for (var _fi = 0; _fi < allPokemon.length; _fi++) { if (allPokemon[_fi].id === _lastStage.id) { _fp = allPokemon[_fi]; break; } } if (_fp && _fp._cumCost != null) _famTotal = _fp._cumCost; } html += '<span class="count-badge">' + fam.stages.length + ' stages</span>'; if (_famTotal > 0) html += '<span class="count-badge" style="color:#ffd700;border-color:#ffd700">' + _famTotal + 'g total</span>'; html += '</div>';
         html += '<div class="evo-timeline">';
 
         for (var j = 0; j < fam.stages.length; j++) {
@@ -887,7 +974,7 @@ function renderEvolutionsTab() {
             html += '<div class="name" style="color:' + tc + '">' + escHTML(s.name) + '</div>';
             html += '<div class="lvl">Lv.' + (s.level||'?') + '</div>';
             html += '<div class="stats">HP:' + fmtHP(s.hp) + ' DPS:' + s.dps + '</div>';
-            if (s.goldCost > 0) html += '<div class="stats" style="color:#ffcc00">' + s.goldCost + 'g</div>';
+            if (s.goldCost > 0) html += '<div class="stats" style="color:#ffcc00">' + s.goldCost + 'g</div>';            var _lp = null; for (var _li = 0; _li < allPokemon.length; _li++) { if (allPokemon[_li].id === s.id) { _lp = allPokemon[_li]; break; } }            if (_lp && _lp._cumCost != null) html += '<div class="stats" style="color:#ffd700;font-weight:bold">' + _lp._cumCost + 'g total</div>';
             html += '</div>';
         }
         html += '</div></div>';
